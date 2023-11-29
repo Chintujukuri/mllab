@@ -1,0 +1,57 @@
+Shortest Job First
+
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct {
+    float at;
+    float wt;
+    float bt;
+    int id;
+}P;
+void main(){
+    int n;
+    printf("Enter number of process:-  ");
+    scanf("%d",&n);
+    P p[n];
+    for(int k=0;k<n;k++){
+        printf("Enter burst time  of  process %d :-  ",k+1);
+        scanf("%f",&p[k].bt);
+        p[k].id=k+1;
+
+    }
+    P temp;
+    for(int t=0;t<n-1;t++){
+        for(int o=0;o<n-t-1;o++){
+            if(p[o].bt >p[o+1].bt){
+                temp= p[o];
+                p[o]=p[o+1];
+                p[o+1]=temp;
+            }
+        }
+    }
+for(int i=0;i<n;i++){
+    if(i==0){
+    p[i].wt=0;
+    }
+    else{
+  p[i].wt=p[i-1].wt + p[i-1].bt;
+    }
+  }
+
+    float wt=0;
+    float bt=0;
+    for(int i=0;i<n;i++){
+    	wt= wt+p[i].wt;
+    	bt=bt+p[i].wt+p[i].bt;
+    }
+
+    printf("\nPID \t AT \t\t BT \t\t WT \t\t TT\n");
+    for(int i=0;i<n;i++){
+    printf("%d \t %f \t %f \t %f \t %f\n",p[i].id,p[i].at,p[i].bt,p[i].wt,p[i].wt+p[i].bt);
+    }
+    bt=bt/n;
+    wt=wt/n;
+
+    printf("Average waiting time for process is %f\n",wt);
+    printf("Average Turnaround time for process is %f\n",bt);
+}

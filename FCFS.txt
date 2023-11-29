@@ -1,0 +1,107 @@
+FCFS NO ARRIVAL TIME
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+int main(){
+int bt[20],wt[20],tat[20],i,n;
+float awt,atat;
+
+printf("number of processors:");
+scanf("%d",&n);
+
+for(i=0;i<n;i++) {
+        printf("enter bursttime for the process %d: ",i+1);
+        scanf("%d",&bt[i]);
+}
+wt[0]=awt=0;
+tat[0]=atat=bt[0];
+
+for(i=1;i<n;i++)
+{
+wt[i] = wt[i-1] + bt[i-1];
+tat[i] = tat[i-1]+ bt[i];
+awt = awt +wt[i];
+atat = atat+tat[i];
+}
+printf("\tProcess \tbursttime \twaitingtime \tturnaroundtime \n");
+
+for(i=0;i<n;i++){
+printf("\tp%d \t\t%d \t\t%d \t\t%d \n",i+1,bt[i],wt[i],tat[i]);
+}
+printf("\n average wating time: %f\n",awt/n);
+printf("average turnaroundtime: %f\n",atat/n);
+}
+
+
+##########################################################################################################
+FCFS SORTED ARRIVAL TIME
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+struct process{
+  int pid; //process_id
+  int at;//arrival time
+  int bt;//burst time
+  int st;//starting time;
+  int wt;//witing time
+  int tat; //turn around time
+  int ct; //completion time
+};
+int main(){
+ int n;
+ struct process p[100], t;
+ double stat=0, swt=0, atat=0, awt=0;
+ printf("\nEnter the no. of processes...\n");
+ scanf("%d", &n);
+
+ for(int i=0 ; i<n ; i++){
+   p[i].pid = i+1;
+   printf("\nEnter the arrival time and burst time of process_%d: ", (i+1));
+   scanf("%d%d", &p[i].at, &p[i].bt);
+ }
+ for( int i=0 ; i<n ; i++){
+   for(int j=i+1 ; j<n ; j++){
+       if( p[i].at > p[j].at){
+          t = p[i];
+          p[i] = p[j];
+          p[j] = t;
+       }
+     }
+   }
+   printf("\nAfter Sorting based on Arrival Time....\n");
+   printf("\tProcess \tarrivaltime \tbursttime\n");
+   for(int i = 0 ; i<n ; i++)
+      printf("\n\t\t%d  \t\t%d  \t\t%d", p[i].pid, p[i].at, p[i].bt);
+
+   p[0].wt =0;
+   p[0].tat=p[0].bt;
+   p[0].ct = p[0].bt + p[0].at;
+   for( int i=1 ; i<n ; i++){
+       if( p[i].at > p[i-1].ct )
+            p[i].wt =0;
+       else
+         p[i].wt = p[i-1].ct - p[i].at;
+        p[i].tat = p[i].wt + p[i].bt;
+        if( p[i].at  <  p[i-1].ct)
+           p[i].ct = p[i-1].ct + p[i].bt;
+        else
+           p[i].ct = p[i-1].ct + p[i].bt + (p[i].at - p[i-1].ct);
+   }
+printf("\n\n\tProcess \tarrivaltime \tbursttime \twaitingtime \tturnaroundtime \tcomplitiontime \n");
+   for(int i=0 ; i<n ; i++)
+printf("\n\t%d \t\t%d \t\t%d \t\t%d \t\t%d \t\t%d \n", p[i].pid, p[i].at, p[i].bt, p[i].wt, p[i].tat, p[i].ct);
+   for(int i=0 ; i<n ; i++){
+       swt += p[i].wt;
+       stat += p[i].tat;
+   }
+   awt = swt/n;
+   atat = stat/n;
+   printf("\n swt = %lf, stat = %lf\n", swt, stat);
+   printf("\n awt = %lf, atat = %lf\n", awt, atat);
+ }
+
+
